@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace BBSA.API.Controllers
 {
-    [Route("api/competition-forms")]
+    [Route("api/tests")]
     [ApiController]
-    public class CompetitionFormsController : ControllerBase
+    public class TestsController : ControllerBase
     {
         [HttpGet]
-        [Route("test-computer-vision")]
+        [Route("computer-vision")]
         [Produces("text/plain")]
-        public Task<string> TestComputerVisionAsync()
+        public Task<string> ComputerVisionAsync()
         {
             StringBuilder responseMessage = new StringBuilder();
 
@@ -1443,9 +1443,9 @@ namespace BBSA.API.Controllers
         }
 
         [HttpGet]
-        [Route("test-form-recognizer")]
+        [Route("form-recognizer")]
         [Produces("text/plain")]
-        public Task<string> TestFormRecognizerAsync()
+        public Task<string> FormRecognizerAsync()
         {
             StringBuilder responseMessage = new StringBuilder();
 
