@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Newtonsoft.Json;
+using System;
 using System.Threading.Tasks;
 
 namespace BBSA.API.Controllers
@@ -1398,6 +1399,23 @@ namespace BBSA.API.Controllers
             }";
 
             OcrResult ocrResult = JsonConvert.DeserializeObject<OcrResult>(ocrResultJson);
+
+            foreach (OcrRegion ocrRegion in ocrResult.Regions)
+            {
+                foreach (OcrLine ocrLine in ocrRegion.Lines)
+                {
+                    foreach (OcrWord ocrWord in ocrLine.Words)
+                    {
+                        if (ocrWord.Text == "POINTS")
+                        {
+                            Console.WriteLine("Text: " + ocrWord.Text);
+                            Console.WriteLine("BoundingBox: " + ocrWord.BoundingBox);
+                            string[] boundingBoxArr = ocrWord.BoundingBox.Split(",");
+                            Console.WriteLine($"CSS style: 'left: {boundingBoxArr[0]}px; top: {boundingBoxArr[1]}px; width: {boundingBoxArr[2]}px; height: {boundingBoxArr[3]}px;'");
+                        }
+                    }
+                }
+            }
 
             return Task.CompletedTask;
         }
