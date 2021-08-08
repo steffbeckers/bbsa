@@ -25,6 +25,13 @@ namespace BBSA.API
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/api/swagger.json", "BBSA.API"));
             }
 
+            app.UseCors(options =>
+            {
+                options.AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowAnyOrigin();
+            });
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -39,6 +46,8 @@ namespace BBSA.API
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors();
+
             services.AddControllers();
 
             services.AddSwaggerGen(c =>
