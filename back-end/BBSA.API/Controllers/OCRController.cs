@@ -2,6 +2,8 @@
 using Microsoft.Azure.CognitiveServices.Vision.ComputerVision.Models;
 using Newtonsoft.Json;
 using System;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace BBSA.API.Controllers
@@ -12,8 +14,11 @@ namespace BBSA.API.Controllers
     {
         [HttpGet]
         [Route("test")]
-        public Task TestAsync()
+        [Produces("text/plain")]
+        public Task<string> TestAsync()
         {
+            StringBuilder responseMessage = new StringBuilder();
+
             string ocrResultJson = @"
             {
                 ""language"": ""en"",
@@ -1406,18 +1411,35 @@ namespace BBSA.API.Controllers
                 {
                     foreach (OcrWord ocrWord in ocrLine.Words)
                     {
+                        string[] boundingBoxArr = ocrWord.BoundingBox.Split(",");
                         if (ocrWord.Text == "POINTS")
                         {
-                            Console.WriteLine("Text: " + ocrWord.Text);
-                            Console.WriteLine("BoundingBox: " + ocrWord.BoundingBox);
-                            string[] boundingBoxArr = ocrWord.BoundingBox.Split(",");
-                            Console.WriteLine($"CSS style: 'left: {boundingBoxArr[0]}px; top: {boundingBoxArr[1]}px; width: {boundingBoxArr[2]}px; height: {boundingBoxArr[3]}px;'");
+                            responseMessage.AppendLine("Text: " + ocrWord.Text);
+                            responseMessage.AppendLine("BoundingBox: " + ocrWord.BoundingBox);
+                            responseMessage.AppendLine($"CSS style: 'left: {boundingBoxArr[0]}px; top: {boundingBoxArr[1]}px; width: {boundingBoxArr[2]}px; height: {boundingBoxArr[3]}px;'");
+                        }
+
+                        int[] boundingBoxIntArr = boundingBoxArr.Select(x => int.Parse(x)).ToArray();
+                        int[] boundingBoxTopLeftBottomRight = new int[] {
+                            boundingBoxIntArr[1],
+                            boundingBoxIntArr[0],
+                            boundingBoxIntArr[1] + boundingBoxIntArr[3],
+                            boundingBoxIntArr[0] + boundingBoxIntArr[2]
+                        };
+
+                        int x = 610;
+                        int y = 1757;
+                        if (boundingBoxTopLeftBottomRight[0] < y && y < boundingBoxTopLeftBottomRight[2] &&
+                            boundingBoxTopLeftBottomRight[1] < x && x < boundingBoxTopLeftBottomRight[3])
+                        {
+                            responseMessage.AppendLine($"x = {x}, y = {y}");
+                            responseMessage.AppendLine(ocrWord.Text);
                         }
                     }
                 }
             }
 
-            return Task.CompletedTask;
+            return Task.FromResult(responseMessage.ToString());
         }
     }
 }
