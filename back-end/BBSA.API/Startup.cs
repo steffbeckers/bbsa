@@ -43,7 +43,7 @@ namespace BBSA.API
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BBSA.API", Version = "v1" });
+                c.SwaggerDoc("api", new OpenApiInfo { Title = "BBSA.API", Version = "v1" });
             });
         }
     }
