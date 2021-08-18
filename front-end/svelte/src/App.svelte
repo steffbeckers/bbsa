@@ -1,5 +1,16 @@
 <script>
-	let name = 'world';
+  let region = "limburg";
 </script>
 
-<h1>Hello {name}!</h1>
+<iframe
+  src="https://limburg.bbsa-snooker.be/wedstrijdformulier/5852"
+  title="BBSA"
+  frameborder="0"
+/>
+
+<style>
+  iframe {
+    width: 100%;
+    height: 100%;
+  }
+</style>
